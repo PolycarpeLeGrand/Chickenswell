@@ -1,0 +1,126 @@
+{% extends 'layout.jinja2' %}
+
+{% block pagestyles %}
+    <link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block bodyblock %}
+    <div class="sidebar">
+        <div class="homelogo">
+            <a href="/">
+                <img src="{{ url_for('static', filename='img/chickenswell_logo_200x200.png') }}" class="logo" alt="Chickenswell logo :("/>
+            </a>
+        </div>
+
+        <div class="sidenav">
+            <a href="/">Home</a>
+            <a href="/">Stuff</a>
+            <a href="/markdown">Markdown</a>
+
+
+        {% for dropdown in dropdowns %}
+            <button class="dropdown-btn" id="{{ dropdown }}">
+                {{ dropdown }}
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-container">
+                {% for sub_cat in dropdowns[dropdown] %}
+                    {# <a href={{ sub_cat }}>{{ sub_cat }}</a> #}
+                    <button class="sub-dropdown-btn" id="{{ sub_cat }}">
+                        <i class="fa fa-caret-right"></i>
+                        {{ sub_cat }}
+                    </button>
+                    <div class="dropdown-container">
+                        {% for note_page in dropdowns[dropdown][sub_cat] %}
+                            <a class="notelink" href={{ dropdowns[dropdown][sub_cat][note_page] }}>{{ note_page }}</a>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <a href="{{ url_for('home_bp.manage_notes') }}">Manage Notes</a>
+        </div>
+
+    </div>
+
+    <div class="content">
+        <div class="contenthead">
+            <h3>
+            {% block headblock %}
+                Chickenswell
+            {% endblock %}
+            </h3>
+        </div>
+
+        <hr style="width:96%">
+
+
+        <div class="contentbody">
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert">
+		                <input type="checkbox" id="alert-close"/>
+                        <label class="alert-close" title="close" for="alert-close">
+                            <i class="fa fa-window-close"></i>
+                        </label>
+		                <p class="alert-inner">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+		                </p>
+	                </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block mainblock %}
+                <p><h3>mainblock</h3></p>
+                <p>contentbody pladeholder</p>
+                <p>More text asdasd ger gerg er blablabla</p>
+            {% endblock %}
+        </div>
+
+        <hr style="width:96%">
+
+        <div class="contentfoot">
+            {% block footblock %}
+                <p style="text-align: center"><a href="{{ url_for('home_bp.home') }}">Home</a> | ©Polycarpelegrand | <a href="https://github.com/PolycarpeLeGrand?tab=repositories" target="_blank">GitHub</a></p>
+            {% endblock %}
+        </div>
+
+    </div>
+
+
+{% endblock %}
+
+{% block additionalscripts %}
+    <script>
+        /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
+        var dropdown = document.querySelectorAll(".dropdown-btn,.sub-dropdown-btn");
+        var i;
+
+        for (i = 0; i < dropdown.length; i++) {
+            dropdown[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            sessionStorage.setItem(this.id, this.classList.value);
+            console.log(sessionStorage)
+            var dropdownContent = this.nextElementSibling;
+            if (dropdownContent.style.display === "block") {
+                    dropdownContent.style.display = "none";
+            } else {
+                dropdownContent.style.display = "block";
+            }
+            });
+        }
+
+        for (i = 0; i < dropdown.length; i++) {
+            if (dropdown[i].id in sessionStorage) {
+                dropdown[i].classList.value = sessionStorage.getItem(dropdown[i].id);
+                if (dropdown[i].classList.contains('active')) {
+                    dropdown[i].nextElementSibling.style.display = "block";
+                }
+            }
+        }
+
+    </script>
+{% endblock %}

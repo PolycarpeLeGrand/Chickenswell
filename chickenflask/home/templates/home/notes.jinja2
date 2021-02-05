@@ -1,0 +1,38 @@
+{% extends 'index.jinja2' %}
+
+{% block pagestyles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='css/entry.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block headblock %}
+    {{ category }} > {{ subcategory }} > {{ entry.name }}
+{% endblock %}
+
+
+{% block mainblock %}
+
+    <div class="note-content">
+        {% if entry.content == '' %}
+            This entry has not content
+        {% elif entry.content_type == 'markdown' %}
+            {{ entry.content|markdown }}
+        {% else %}
+            {{ entry.content }}
+        {% endif %}
+    </div>
+
+    <br>
+
+{% endblock %}
+
+
+{% block footblock %}
+    <p style="text-align: center">
+        <a class="" style="color: black" href="{{ entry.drive_url }}" target="_blank">View in Drive</a> | Last Updated: {{ entry.last_update }} | <a class="" style="color: black" href="{{ url_for('home_bp.manage_notes_update', id=entry.id) }}">Force update</a>
+    </p>
+
+    <p style="text-align: center">
+        <a class="" style="color: black" href="{{ url_for('home_bp.manage_notes') }}">Manage Notes</a>
+    </p>
+{% endblock %}

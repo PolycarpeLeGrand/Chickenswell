@@ -1,0 +1,27 @@
+{% extends 'index.jinja2' %}
+
+{% block pagestyles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='css/entry.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block headblock %}
+    Chickenswell<i><span style="color: #ae1b1b; font-size: 14px">.com</span></i>
+{% endblock %}
+
+
+{% block mainblock %}
+    <div>
+
+        <h1>Welcome!</h1>
+
+        <p>
+            <a href="{{ url_for('static', filename='pdf/chicken.pdf') }}" target="_blank">Research report</a>
+        </p>
+    </div>
+{% endblock %}
+
+
+{% block footblock %}
+    {{ super() }}
+{% endblock %}
