@@ -17,7 +17,7 @@ class Config:
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
     # SQLALCHEMY_DATABASE_URI = environ.get('SQLALCHEMY_DATABASE_URI')
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + str(BASE_PATH / 'testdatabase.db')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + str(BASE_PATH / 'database.db')
     # 'sqlite:///' + str(BASE_PATH / 'database.db')
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
