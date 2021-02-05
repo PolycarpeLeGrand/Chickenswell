@@ -92,25 +92,3 @@ if __name__ == '__main__':
 
     if input('Enter y to make base notes categories: ') == 'y':
         make_base_cats()
-
-
-
-# app = init_app()
-# app.app_context().push()
-# db.create_all(app=app)
-# User.query.all()
-# NotesCategory.query.all()
-# NotesSubcategory.query.all()
-# NotesEntry.query.all()
-
-# admin = Amin(...)
-
-# db.session.add(admin)
-# db.session.add(guest)
-# db.session.commit()
-
-# User.query.filter_by(username='peter').first()
-# peter.email
-
-# https://flask-sqlalchemy.palletsprojects.com/en/2.x/queries/
-# https://flask-sqlalchemy.palletsprojects.com/en/2.x/#user-guide

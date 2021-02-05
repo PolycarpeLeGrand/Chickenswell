@@ -4,33 +4,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from .drivesync import sync_new_file
 
 
-'''
-
-from chickenflask import init_app
-from chickenflask import db
-app = init_app()
-app.app_context().push()
-from chickenflask import db
-db.create_all(app=app)
-from chickenflask.home.models import User, NotesCategory, NotesSubcategory, NotesEntry
-User.query.all()
-NotesCategory.query.all()
-NotesSubcategory.query.all()
-NotesEntry.query.all()
-
-admin = Amin(...)
-
-db.session.add(admin)
-db.session.add(guest)
-db.session.commit()
-
-User.query.filter_by(username='peter').first()
-peter.email
-
-https://flask-sqlalchemy.palletsprojects.com/en/2.x/queries/
-https://flask-sqlalchemy.palletsprojects.com/en/2.x/#user-guide
-'''
-
 class User(UserMixin, db.Model):
     """User account model."""
 
