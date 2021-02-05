@@ -22,3 +22,4 @@ Installation
      * If desired, create base note categories.
 7. Run test server or deploy to prod!
 
+Note: Markdown menu option expects a note entry named 'Markdown'. Create one (in any category/subcategory) or edit home/routes.py to avoid 404.
