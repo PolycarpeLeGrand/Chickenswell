@@ -3,6 +3,7 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flaskext.markdown import Markdown
+from config import IS_PRODUCTION
 
 # from ddtrace import patch_all
 # https://hackersandslackers.com/flask-application-factory/
@@ -15,7 +16,8 @@ login_manager = LoginManager()
 def init_app():
     """Create Flask application."""
     app = Flask(__name__, instance_relative_config=False)
-    app.config.from_object("config.DevConfig")
+    config = 'config.ProdConfig' if IS_PRODUCTION else 'config.DevConfig'
+    app.config.from_object(config)
 
     db.init_app(app)
     login_manager.init_app(app)

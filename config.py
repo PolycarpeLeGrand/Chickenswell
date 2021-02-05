@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from os import environ
 
 
+IS_PRODUCTION = False
+
 BASE_PATH = Path(__file__).parent
 load_dotenv(BASE_PATH / '.env')
 
