@@ -74,9 +74,6 @@ def make_base_cats():
         for sub_cat_dict in cat_dict['subcats']:
             db.session.add(NotesSubcategory(name=sub_cat_dict['name'], category_name=cat, priority=sub_cat_dict['rank']))
 
-    sc = NotesSubcategory.query.filter_by(name='Python Basics').first()
-    entry = NotesEntry(name='Python stuff', category_name=sc.name)
-    db.session.add(entry)
     db.session.commit()
     print(NotesCategory.query.all())
 
