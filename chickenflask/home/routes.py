@@ -67,8 +67,8 @@ def manage_notes_add_entry():
             db.session.add(new_entry)
             db.session.commit()
             flash(f'Success! Added {new_entry.name} in {form.category.data} - {form.subcategory.data}')
-        except:
-            flash('Error!')
+        except Exception as err:
+            flash(f'Error! {err}')
     return redirect(url_for('home_bp.manage_notes'))
 
 
@@ -82,8 +82,8 @@ def manage_notes_add_category():
             db.session.add(new_entry)
             db.session.commit()
             flash(f'Success! Created new category: {new_entry.name}')
-        except:
-            flash('Error!')
+        except Exception as err:
+            flash(f'Error! {err}')
     return redirect(url_for('home_bp.manage_notes'))
 
 
@@ -97,8 +97,8 @@ def manage_notes_add_subcategory():
             db.session.add(new_entry)
             db.session.commit()
             flash(f'Success! Created new subcategory: {new_entry.name} ({new_entry.category_name})')
-        except:
-            flash('Error!')
+        except Exception as err:
+            flash(f'Error! {err}')
     return redirect(url_for('home_bp.manage_notes'))
 
 
@@ -112,9 +112,8 @@ def manage_notes_delete_entry():
             db.session.delete(entry)
             db.session.commit()
             flash(f'Success! Deleted {entry.name}')
-        except:
-            flash('Error!')
-
+        except Exception as err:
+            flash(f'Error! {err}')
     return redirect(url_for('home_bp.manage_notes'))
 
 
@@ -133,9 +132,8 @@ def manage_notes_delete_cat():
             db.session.delete(c)
             db.session.commit()
             flash(f'Success! Deleted {c.name}')
-        except:
-            flash('Error! Make sure cat / subcat has no children.')
-
+        except Exception as err:
+            flash(f'Error! {err}')
     return redirect(url_for('home_bp.manage_notes'))
 
 
