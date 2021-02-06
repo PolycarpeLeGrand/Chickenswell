@@ -31,8 +31,5 @@
     <p style="text-align: center">
         <a class="" style="color: black" href="{{ entry.drive_url }}" target="_blank">View in Drive</a> | Last Updated: {{ entry.last_update }} | <a class="" style="color: black" href="{{ url_for('home_bp.manage_notes_update', id=entry.id) }}">Force update</a>
     </p>
-
-    <p style="text-align: center">
-        <a class="" style="color: black" href="{{ url_for('home_bp.manage_notes') }}">Manage Notes</a>
-    </p>
+    {{ super() }}
 {% endblock %}

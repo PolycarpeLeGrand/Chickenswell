@@ -55,11 +55,15 @@ def get_binaries_from_id(file_id, last_sync=None):
         return 'no_update', b''
 
     # Check mime type and make appropriate request for content
-    assert mime_type in ['text/plain', 'application/vnd.google-apps.document', 'text/markdown'], \
+    assert mime_type in ['text/plain', 'application/vnd.google-apps.document', 'text/markdown', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'], \
         f'Mime type "{mime_type}" not supported. Check to make sure file is a txt/rst or a doc.'
 
     if mime_type in ['text/plain', 'text/markdown']:
-        update_type = 'rst'
+        update_type = 'md'
+        request = service.files().get_media(fileId=file_id)
+
+    elif mime_type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+        update_type = 'docx'
         request = service.files().get_media(fileId=file_id)
 
     else:
@@ -107,7 +111,7 @@ def sync_new_file(url):
     id = get_id_from_url(url)
     status, binary = get_binaries_from_id(id)
 
-    if status == 'rst':
+    if status == 'md':
         content_type = 'markdown'
         content = binary.getvalue().decode("utf-8")
     elif status == 'docx':

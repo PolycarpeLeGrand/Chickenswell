@@ -137,7 +137,6 @@ def manage_notes_delete_cat():
     return redirect(url_for('home_bp.manage_notes'))
 
 
-
 @home_bp.route('/notes/manage/update/<string:id>', methods=['GET'])
 @login_required
 def manage_notes_update(id):
