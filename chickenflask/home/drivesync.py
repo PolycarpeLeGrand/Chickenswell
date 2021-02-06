@@ -55,10 +55,10 @@ def get_binaries_from_id(file_id, last_sync=None):
         return 'no_update', b''
 
     # Check mime type and make appropriate request for content
-    assert mime_type in ['text/plain', 'application/vnd.google-apps.document'], \
+    assert mime_type in ['text/plain', 'application/vnd.google-apps.document', 'text/markdown'], \
         f'Mime type "{mime_type}" not supported. Check to make sure file is a txt/rst or a doc.'
 
-    if mime_type == 'text/plain':
+    if mime_type in ['text/plain', 'text/markdown']:
         update_type = 'rst'
         request = service.files().get_media(fileId=file_id)
 
@@ -127,8 +127,8 @@ if __name__ == '__main__':
     status, binary = get_binaries_from_id(file_id)
     print(status)
     # print(process_txt(binary))
-    fi = process_docx(binary)
-    save_to_rst(fi, 'fromdocx.rst')
+    #fi = process_docx(binary)
+    #save_to_rst(fi, 'fromdocx.rst')
 
 
 
