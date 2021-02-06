@@ -17,6 +17,7 @@ Installation
 5. Get credentials from google to allow Drive sync
      * Place `credentials.json` in chickenflask/home
      * Follow Google instructions to allow API access
+     * If unable to add notes, try running drivesync.get_binaries_from_id() from console to force the auth process.
 6. Init database by running dbsetup.py
      * Create a User.
      * If desired, create base note categories.
