@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from flask import current_app as app
 from flask_login import current_user, login_required
 from .models import db, NotesCategory, NotesSubcategory, NotesEntry
@@ -15,8 +15,11 @@ home_bp = Blueprint(
 
 @app.context_processor
 def notes_sidebar_processor():
-    d = {cat.name: {subcat.name: {entry.name: url_for('home_bp.notes', cat=cat.name, subcat=subcat.name, entry=entry.name) for entry in subcat.entries} for subcat in cat.sub_categories}
-         for cat in NotesCategory.query.order_by(NotesCategory.priority).all()}
+    if current_user.is_authenticated:
+        d = {cat.name: {subcat.name: {entry.name: url_for('home_bp.notes', cat=cat.name, subcat=subcat.name, entry=entry.name) for entry in subcat.entries} for subcat in cat.sub_categories}
+             for cat in NotesCategory.query.order_by(NotesCategory.priority).all()}
+    else:
+        d = {}
     return {'dropdowns': d}
 
 

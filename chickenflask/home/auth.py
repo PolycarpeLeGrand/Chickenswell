@@ -47,7 +47,6 @@ def login():
         if user and user.check_password(password=form.password.data):
             login_user(user)
             next_page = request.args.get('next')
-            print(next_page)
             return redirect(next_page or url_for('home_bp.home'))
         # flash('Invalid username/password combination')
         return redirect(url_for('auth_bp.login'))
@@ -58,6 +57,13 @@ def login():
         template='login-page',
         body="Log in with your User account."
     )
+
+
+@auth_bp.route('/logout', methods=['GET'])
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('home_bp.home'))
 
 
 @login_manager.user_loader
