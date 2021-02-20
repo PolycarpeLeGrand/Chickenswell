@@ -10,7 +10,7 @@ from google.auth.transport.requests import Request
 from config import BASE_PATH
 
 # If modifying these scopes, delete the file token.pickle.
-CREDS_PATH = BASE_PATH / 'chickenflask/home'
+CREDS_PATH = BASE_PATH / 'chickenflask/notes'
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 
 

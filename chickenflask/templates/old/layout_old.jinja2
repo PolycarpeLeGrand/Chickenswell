@@ -10,34 +10,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
     <meta name="theme-color" content="#5eb9d7"/>
 
-    <title>{{ title }}</title>
+    <title>{{ title|default("Chickenswell", true) }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/chickenswell_logo_200x200.png') }}" type="image/x-icon"/>
     <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,500" rel="stylesheet"/>
-    <link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/layout.css') }}" rel="stylesheet" type="text/css">
     {% endblock %}
     {% block pagestyles %}{% endblock %}
 </head>
 
-<body class="layout">
+<body class="body">
 
-<div class="sidebar">
-    <div class="homelogo">
-        <a href="#">
-            <img src="{{ url_for('static', filename='img/chickenswell_logo_200x200.png') }}" class="logo" alt="Chickenswell logo :("/>
-        </a>
-    </div>
-    <a href="#news">News</a>
-    <a href="#contact">Contact</a>
-    <a href="#about">About</a>
-</div>
-
-
-<div class="content">
-    {% block content %}{% endblock %}
-</div>
-
-
+{% block bodyblock %}{% endblock %}
 {% block additionalscripts %}{% endblock %}
+
 </body>
 
 </html>

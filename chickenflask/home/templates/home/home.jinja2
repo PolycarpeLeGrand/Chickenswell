@@ -1,16 +1,16 @@
-{% extends 'index.jinja2' %}
+{% extends 'basetemplate.jinja2' %}
 
-{% block pagestyles %}
+{% block styles %}
     {{ super() }}
     <link href="{{ url_for('static', filename='css/entry.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
-{% block headblock %}
+{% block contentheadblock %}
     Home
 {% endblock %}
 
 
-{% block mainblock %}
+{% block contentbodyblock %}
     <div>
 
         <h1>Welcome!</h1>
@@ -22,6 +22,6 @@
 {% endblock %}
 
 
-{% block footblock %}
+{% block contentfootblock %}
     {{ super() }}
 {% endblock %}

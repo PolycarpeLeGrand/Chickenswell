@@ -1,6 +1,7 @@
 from chickenflask import init_app
 from chickenflask import db
-from chickenflask.home.models import User, NotesCategory, NotesSubcategory, NotesEntry
+from chickenflask.home.models import User
+from chickenflask.notes.models import NotesCategory, NotesSubcategory, NotesEntry
 
 
 def make_user():
@@ -23,12 +24,13 @@ def make_base_cats():
         'Nerd Notes':
             {'rank': 10,
              'subcats': [
-                 {'name': 'Rasp Pi', 'rank': 10},
+                 {'name': 'Raspberry Pi', 'rank': 10},
                  {'name': 'Python Basics', 'rank': 11},
                  {'name': 'Flask and Dash', 'rank': 14},
                  {'name': 'Pandas and Numpy', 'rank': 15},
                  {'name': 'ML and NLP', 'rank': 17},
                  {'name': 'Data Science', 'rank': 18},
+                 {'name': 'Frontend', 'rank': 19},
                  {'name': 'Others', 'rank': 21}
                 ]
              },
@@ -58,10 +60,12 @@ def make_base_cats():
                  {'name': 'Activités', 'rank': 14},
                  {'name': 'Notes et Théorie', 'rank': 16},
                  {'name': 'Ressources', 'rank': 18},
+                 {'name': 'Portfolio', 'rank': 19},
+                 {'name': 'Notes de Cours', 'rank': 21},
                 ]
              },
         'Varia':
-            {'rank': 20,
+            {'rank': 21,
              'subcats': [
                  {'name': 'Finance', 'rank': 10},
                 ]

@@ -1,0 +1,87 @@
+{% extends 'layout.jinja2' %}
+
+{% block headblock %}
+    {{ super() }}
+    {# Insert additionnal meta or header tags here #}
+{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    {# Insert additionnal styles here #}
+{% endblock %}
+
+
+{% block bodyblock %}
+
+    {% block sideblock %}
+        {% include 'sidenav.jinja2' %}
+    {% endblock %}
+
+    <div class="content">
+
+        <div class="header">
+            <p>
+                <b>Chickenswell</b><i><span style="color: #ae1b1b; font-size: 14px">.com</span></i>
+            <span style="text-align: right; float: right">
+                {% if current_user.is_authenticated %}
+                    Logged in as {{ current_user.name }} | <a href="{{ url_for('auth_bp.logout') }}" style="color: black">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('auth_bp.login') }}" style="color: black">Login</a>
+                {% endif %}
+            </span>
+            </p>
+        </div>
+
+        <div class="contenthead">
+            <h3>
+            {% block contentheadblock %}
+                Chickenswell
+            {% endblock %}
+            </h3>
+        </div>
+
+        <hr style="width:96%">
+
+
+        <div class="contentbody">
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert">
+		                <input type="checkbox" id="alert-close"/>
+                        <label class="alert-close" title="close" for="alert-close">
+                            <i class="fa fa-window-close"></i>
+                        </label>
+		                <p class="alert-inner">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+		                </p>
+	                </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block contentbodyblock %}
+                <p><h3>mainblock</h3></p>
+                <p>contentbody pladeholder</p>
+                <p>More text asdasd ger gerg er blablabla</p>
+            {% endblock %}
+        </div>
+
+        <hr style="width:96%">
+
+        <div class="contentfoot">
+            {% block contentfootblock %}
+                <p style="text-align: center"><a href="{{ url_for('home_bp.home') }}">Home</a> | ©Polycarpelegrand | <a href="https://github.com/PolycarpeLeGrand?tab=repositories" target="_blank">GitHub</a></p>
+            {% endblock %}
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {# Insert additionnal scripts here #}
+{% endblock %}
+

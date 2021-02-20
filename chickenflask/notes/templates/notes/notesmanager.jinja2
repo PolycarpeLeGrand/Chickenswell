@@ -1,23 +1,23 @@
-{% extends 'index.jinja2' %}
+{% extends 'basetemplate.jinja2' %}
 
 {% block pagestyles %}
     {{ super() }}
     <link href="{{ url_for('static', filename='css/notesmanager.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
-{% block headblock %}
+{% block contentheadblock %}
     Manage Notes
 {% endblock %}
 
 
-{% block mainblock %}
+{% block contentbodyblock %}
 
     <div class="forms-div">
     <div class="form-wrapper">
 
         <h3>Add Notes Entry</h3>
 
-        <form method="POST" action="{{ url_for('home_bp.manage_notes_add_entry') }}">
+        <form method="POST" action="{{ url_for('notes_bp.manage_notes_add_entry') }}">
             {{ entry_form.csrf_token }}
 
             <fieldset class="text-field">
@@ -57,7 +57,7 @@
 
         <h3>Add Notes Category</h3>
 
-        <form method="POST" action="{{ url_for('home_bp.manage_notes_add_category') }}">
+        <form method="POST" action="{{ url_for('notes_bp.manage_notes_add_category') }}">
             {{ category_form.csrf_token }}
 
             <fieldset class="text-field">
@@ -76,7 +76,7 @@
 
         <h3>Add Notes Subategory</h3>
 
-        <form method="POST" action="{{ url_for('home_bp.manage_notes_add_subcategory') }}">
+        <form method="POST" action="{{ url_for('notes_bp.manage_notes_add_subcategory') }}">
             {{ subcategory_form.csrf_token }}
 
             <fieldset class="text-field">
@@ -100,7 +100,7 @@
 
         <h3>Delete Notes Entry</h3>
 
-        <form method="POST" action="{{ url_for('home_bp.manage_notes_delete_entry') }}">
+        <form method="POST" action="{{ url_for('notes_bp.manage_notes_delete_entry') }}">
             {{ delete_form.csrf_token }}
 
             <fieldset class="text-field">
@@ -119,7 +119,7 @@
 
         <h3>Delete Notes Category or Subcategory</h3>
 
-        <form method="POST" action="{{ url_for('home_bp.manage_notes_delete_cat') }}">
+        <form method="POST" action="{{ url_for('notes_bp.manage_notes_delete_cat') }}">
             {{ cat_delete_form.csrf_token }}
 
             <fieldset class="text-field">
@@ -138,7 +138,8 @@
 
         </form>
     </div>
-
+        {% from 'notes/notesmanagermacros.jinja2' import entry %}
+        {{ entry('titre', 'contenu') }}
     </div>
 
     <div style="padding-top: 30px">
@@ -167,21 +168,23 @@
 {% endblock %}
 
 
-{% block footblock %}
+{% block contentfootblock %}
     {{ super() }}
 {% endblock %}
 
 
-{% block additionalscripts %}
+{% block scripts %}
     {{ super() }}
     <script>
 
         let category_select = document.getElementById('category');
         let subcategory_select = document.getElementById('subcategory');
         let cats = {{ dropdowns }};
+        console.log(category_select)
+        console.log('asda')
 
         category_select.addEventListener('change', function () {
-            var options_html = '';
+            let options_html = '';
             for (let subcat of Object.keys(cats[category_select.value])) {
                 options_html += '<option value="' + subcat + '">' + subcat + '</option>';
             }

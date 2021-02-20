@@ -1,16 +1,16 @@
-{% extends 'index.jinja2' %}
+{% extends 'basetemplate.jinja2' %}
 
-{% block pagestyles %}
+{% block styles %}
     {{ super() }}
     <link href="{{ url_for('static', filename='css/entry.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
-{% block headblock %}
+{% block contentheadblock %}
     {{ category }} > {{ subcategory }} > {{ entry.name }}
 {% endblock %}
 
 
-{% block mainblock %}
+{% block contentbodyblock %}
 
     <div class="note-content">
         {% if entry.content == '' %}
@@ -27,9 +27,10 @@
 {% endblock %}
 
 
-{% block footblock %}
+{% block contentfootblock %}
     <p style="text-align: center">
-        <a class="" style="color: black" href="{{ entry.drive_url }}" target="_blank">View in Drive</a> | Last Updated: {{ entry.last_update }} | <a class="" style="color: black" href="{{ url_for('home_bp.manage_notes_update', id=entry.id) }}">Force update</a>
+        <a class="" style="color: black" href="{{ entry.drive_url }}" target="_blank">View in Drive</a> | Last Updated: {{ entry.last_update }} | <a class="" style="color: black" href="{{ url_for('notes_bp.manage_notes_update', id=entry.id) }}">Force update</a>
     </p>
     {{ super() }}
 {% endblock %}
+

@@ -10,11 +10,13 @@ Installation
 2. Install dependencies `python -m pip install -r requirements.txt`
      * It is recommanded to setup a venv first
      * Project was made on python 3.8.3
+     * Also install less dependencies, `npm install less -g`
 3. Make .env file in base dir
      * File is simply named '.env' (unless specified otherwise in config.py)
      * Should contain `SECRET_KEY='somelongandrandomchainofcharacters'`
 4. Edit config.py
      * Set IS_PRODUCITON to True if prod
+     * Set less_path, find via `> which lessc` or `> where lessc` 
      * Rest should be fine
 5. Get credentials from google to allow Drive sync
      * Place `credentials.json` in chickenflask/home
@@ -50,3 +52,12 @@ Supported file types:
 * .txt and .md wil be rendered as markdown 
 * MS Word (.docx) and google doc files will be converted to html
 
+
+TODO
+----
+
+* less css
+* Split notes in new app
+* Better db models and management
+* Auto-update drive file based on last_updated
+* Text editor!

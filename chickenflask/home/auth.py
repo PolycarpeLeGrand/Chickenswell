@@ -8,23 +8,12 @@ from chickenflask import login_manager
 #from .models import User, db
 
 
-
-
 # Blueprint Configuration
 auth_bp = Blueprint(
     'auth_bp', __name__,
     template_folder='templates',
     static_folder='static'
 )
-
-
-def create_admin():
-    user = User(
-        name='Name',
-    )
-    user.set_password('Password')
-    db.session.add(user)
-    db.session.commit()
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])

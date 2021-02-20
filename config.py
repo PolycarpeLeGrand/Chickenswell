@@ -4,10 +4,13 @@ from dotenv import load_dotenv
 from os import environ
 
 
-IS_PRODUCTION = False
-
 BASE_PATH = Path(__file__).parent
 load_dotenv(BASE_PATH / '.env')
+# less_path = 'C:\\Users\\Sanchez\\AppData\\Roaming\\npm\\lessc'
+# less_path = 'C:/Users/Sanchez/AppData/Roaming/npm/lessc'
+# less_path = Path('C:/Users/Sanchez/AppData/Roaming/npm/lessc')
+
+IS_PRODUCTION = environ.get('IS_PROD') == 'True'
 
 
 # See: https://hackersandslackers.com/configure-flask-applications/
@@ -18,11 +21,13 @@ class Config:
     FLASK_APP = 'wsgi.py'
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
-    # SQLALCHEMY_DATABASE_URI = environ.get('SQLALCHEMY_DATABASE_URI')
+
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + str(BASE_PATH / 'database.db')
-    # 'sqlite:///' + str(BASE_PATH / 'database.db')
+
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    LESS_BIN = environ.get('LESS_BIN')
 
 
 class ProdConfig(Config):
