@@ -11,6 +11,8 @@ load_dotenv(BASE_PATH / '.env')
 # less_path = Path('C:/Users/Sanchez/AppData/Roaming/npm/lessc')
 
 IS_PRODUCTION = environ.get('IS_PROD') == 'True'
+DRIVE_FOLDER_ID = environ.get('DRIVE_FOLDER_ID')
+DRIVE_DEBUG = True
 
 
 # See: https://hackersandslackers.com/configure-flask-applications/
@@ -43,4 +45,5 @@ class DevConfig(Config):
     DEBUG = True
     TESTING = True
     EXPLAIN_TEMPLATE_LOADING = False
+    DRIVE_DEBUG = True
 

@@ -1,0 +1,116 @@
+{% extends 'basetemplate.jinja2' %}
+
+
+{% block styles %}
+    {{ super() }}
+    <link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet">
+    {% assets "notes_less" %}
+        <link href="{{ ASSET_URL }}" rel="stylesheet" type="text/css">
+    {% endassets %}
+{% endblock %}
+
+
+{% block contentheadblock %}
+    Note Editor - {{ entry.name }}
+{% endblock %}
+
+
+{% block contentbodyblock %}
+
+    <div id="toolbar">
+        <h5 style="margin: 2px">Markdown Editor</h5>
+        {# <button class="ql-bold">Bold</button>
+        <button class="ql-italic">Italic</button> #}
+    </div>
+
+    <p id="default-text" style="display: none">{{ entry.content }}</p>
+    <div id="editor" style="height: 60vh;font-family: 'Courier New'; font-size: 14px">
+        <p>Text</p>
+    </div>
+
+    <div>
+        <button class="save-button" id="save-button">Save</button>
+    </div>
+
+{% endblock %}
+
+
+{% block contentfootblock %}
+
+{% endblock %}
+
+
+{% block scripts %}
+    {{ super() }}
+    {# Insert additionnal scripts here #}
+    <script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
+
+    <script>
+        var editor = new Quill('#editor', {
+            modules: { toolbar: '#toolbar'},
+            theme: 'snow',
+            scrollingContainer: '#scrolling-container',
+        });
+    </script>
+
+    <script>
+        {#
+        let previewBtn = document.getElementById('preview-button');
+        previewBtn.addEventListener("click", function() {
+            //let content = document.getElementById('editor')
+            console.log(JSON.stringify(editor.getContents()));
+
+            let t = editor.getContents()['ops'];
+            let text = '';
+            var textPart;
+            var inp = document.querySelector('input[name=about]');
+            inp.value = editor.getContents();
+            console.log(t);
+
+            for (textPart of t) {
+                text += textPart['insert'];
+
+            }
+            $.post(url_for('home_bp.stuff'), editor.getContents());
+            //document.getElementById('rendered-input').insertAdjacentText("afterbegin", text);
+        }); #}
+    </script>
+    <script>
+    $(document).ready(function (){
+
+        // Adjust css of new editor div and set default text (setting via html doesn't render newlines)
+        $('.ql-editor').css('padding', '2px 2px');
+        //$('.ql-toolbar').css('display', 'none');
+        editor.setText($('#default-text').text());
+
+        // Sent post to adjust display on button click
+        // TODO save and save+exit. Same class to assing, then use ids and if to redirect or not
+        $('.save-button').on('click', function (){
+
+           let t = editor.getContents()['ops'];
+           let text = '';
+           let textPart;
+           for (textPart of t) {
+                text += textPart['insert'];
+           }
+
+           //$.post("{{ url_for('notes_bp.notes_edit_save', id=entry.id) }}", {text_data: text});
+
+           let req = $.ajax({
+               url:  "{{ url_for('notes_bp.notes_edit_save', id=entry.id) }}",
+               type: 'POST',
+               data: {text_data: text},
+               success: function(redir) {
+                   window.location.href = redir;
+               }
+           });
+
+           //req.done(function(data){
+             //  $('#rendered-input').html(data);
+           //});
+
+        });
+    });
+
+    </script>
+{% endblock %}

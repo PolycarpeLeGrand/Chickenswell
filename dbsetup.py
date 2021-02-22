@@ -76,10 +76,10 @@ def make_base_cats():
         db.session.add(NotesCategory(name=cat, priority=cat_dict['rank']))
 
         for sub_cat_dict in cat_dict['subcats']:
-            db.session.add(NotesSubcategory(name=sub_cat_dict['name'], category_name=cat, priority=sub_cat_dict['rank']))
+            db.session.add(NotesSubcategory(name=sub_cat_dict['name'], parent_name=cat, priority=sub_cat_dict['rank']))
 
     db.session.commit()
-    print(NotesCategory.query.all())
+    # print(NotesCategory.query.all())
 
 
 if __name__ == '__main__':

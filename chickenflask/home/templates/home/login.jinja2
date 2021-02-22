@@ -1,8 +1,10 @@
 {% extends 'layout.jinja2' %}
 
 {% block styles %}
-    {{  super() }}
-    <link href="{{ url_for('static', filename='css/account.css') }}" rel="stylesheet" type="text/css">
+    {{ super() }}
+    {% assets "auth_less" %}
+        <link href="{{ ASSET_URL }}" rel="stylesheet" type="text/css">
+    {% endassets %}
 {% endblock %}
 
 
@@ -29,7 +31,7 @@
 
     <h1>Log In</h1>
 
-    <form method="POST" action="/login">
+    <form method="POST" action="{{ url_for('auth_bp.login') }}">
         {{ form.csrf_token }}
 
         <fieldset class="name">

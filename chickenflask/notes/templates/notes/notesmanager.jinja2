@@ -1,170 +1,36 @@
 {% extends 'basetemplate.jinja2' %}
 
-{% block pagestyles %}
+{% block styles %}
     {{ super() }}
-    <link href="{{ url_for('static', filename='css/notesmanager.css') }}" rel="stylesheet" type="text/css">
+    {% assets "notes_less" %}
+        <link href="{{ ASSET_URL }}" rel="stylesheet" type="text/css">
+    {% endassets %}
 {% endblock %}
 
 {% block contentheadblock %}
-    Manage Notes
+    Manage Notes Dynamic test
 {% endblock %}
 
 
 {% block contentbodyblock %}
-
-    <div class="forms-div">
-    <div class="form-wrapper">
-
-        <h3>Add Notes Entry</h3>
-
-        <form method="POST" action="{{ url_for('notes_bp.manage_notes_add_entry') }}">
-            {{ entry_form.csrf_token }}
-
-            <fieldset class="text-field">
-                {{ entry_form.name.label }}
-                {{ entry_form.name }}
-            </fieldset>
-
-            <fieldset class="text-field">
-                {{ entry_form.drive_url.label }}
-                {{ entry_form.drive_url }}
-                {% if entry_form.drive_url.errors %}
-                <ul class="errors">
-                    {% for error in entry_form.drive_url.errors %}
-                    <li>{{ error }}</li>{% endfor %}
-                </ul>
-                {% endif %}
-            </fieldset>
-
-            <fieldset class="select-field">
-                {{ entry_form.category.label }}
-                {{ entry_form.category }}
-            </fieldset>
-
-            <fieldset class="select-field">
-                {{ entry_form.subcategory.label }}
-                {{ entry_form.subcategory }}
-            </fieldset>
-
-            <div class="submit-button">
-                {{ entry_form.submit }}
-            </div>
-
-        </form>
-    </div>
-
-    <div class="form-wrapper">
-
-        <h3>Add Notes Category</h3>
-
-        <form method="POST" action="{{ url_for('notes_bp.manage_notes_add_category') }}">
-            {{ category_form.csrf_token }}
-
-            <fieldset class="text-field">
-                {{ category_form.name.label }}
-                {{ category_form.name }}
-            </fieldset>
-
-            <div class="submit-button">
-                {{ category_form.submit }}
-            </div>
-
-        </form>
-    </div>
-
-    <div class="form-wrapper">
-
-        <h3>Add Notes Subategory</h3>
-
-        <form method="POST" action="{{ url_for('notes_bp.manage_notes_add_subcategory') }}">
-            {{ subcategory_form.csrf_token }}
-
-            <fieldset class="text-field">
-                {{ subcategory_form.name.label }}
-                {{ subcategory_form.name }}
-            </fieldset>
-
-            <fieldset class="select-field">
-                {{ subcategory_form.category.label }}
-                {{ subcategory_form.category }}
-            </fieldset>
-
-            <div class="submit-button">
-                {{ subcategory_form.submit }}
-            </div>
-
-        </form>
-    </div>
-
-    <div class="form-wrapper">
-
-        <h3>Delete Notes Entry</h3>
-
-        <form method="POST" action="{{ url_for('notes_bp.manage_notes_delete_entry') }}">
-            {{ delete_form.csrf_token }}
-
-            <fieldset class="text-field">
-                {{ delete_form.name.label }}
-                {{ delete_form.name }}
-            </fieldset>
-
-            <div class="submit-button">
-                {{ delete_form.submit }}
-            </div>
-
-        </form>
-    </div>
-
-    <div class="form-wrapper">
-
-        <h3>Delete Notes Category or Subcategory</h3>
-
-        <form method="POST" action="{{ url_for('notes_bp.manage_notes_delete_cat') }}">
-            {{ cat_delete_form.csrf_token }}
-
-            <fieldset class="text-field">
-                {{ cat_delete_form.name.label }}
-                {{ cat_delete_form.name }}
-            </fieldset>
-
-            <fieldset class="select-field">
-                {{ cat_delete_form.model_type.label }}
-                {{ cat_delete_form.model_type }}
-            </fieldset>
-
-            <div class="submit-button">
-                {{ cat_delete_form.submit }}
-            </div>
-
-        </form>
-    </div>
-        {% from 'notes/notesmanagermacros.jinja2' import entry %}
-        {{ entry('titre', 'contenu') }}
-    </div>
-
-    <div style="padding-top: 30px">
-        <h3>Notes Tree</h3>
-        <ul class="notes-tree">
-            {% for cat in dropdowns %}
-                <li>
-                    <h4>{{ cat }}</h4>
-                    <ul>
-                        {% for subcat in dropdowns[cat] %}
-                            <li>
-                                <h5>{{ subcat }}</h5>
-                                <ul>
-                                    {% for entry in dropdowns[cat][subcat] %}
-                                        <li>{{ entry }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </li>
+    {% from 'notes/notesmanagermacros.jinja2' import catmacro, entrymacro %}
+    <div class="notesmanager-categories">
+    {% for cat in categories %}
+        <div class="notesmanager-category">{{ catmacro(cat) }}</div>
+        <div class="notesmanager-subcategories">
+        {% for subcat in cat.sub_categories %}
+            <div class="notesmanager-subcategory">{{ catmacro(subcat, 'Subcategory') }}</div>
+            <div class="notesmanager-entries">
+            {% for entry in subcat.entries %}
+                <div class="notesmanager-entry">
+                    {{ entrymacro(entry) }}
+                </div>
             {% endfor %}
-        </ul>
+            </div>
+        {% endfor %}
+        </div>
+    {% endfor %}
     </div>
-
 {% endblock %}
 
 
@@ -175,24 +41,5 @@
 
 {% block scripts %}
     {{ super() }}
-    <script>
-
-        let category_select = document.getElementById('category');
-        let subcategory_select = document.getElementById('subcategory');
-        let cats = {{ dropdowns }};
-        console.log(category_select)
-        console.log('asda')
-
-        category_select.addEventListener('change', function () {
-            let options_html = '';
-            for (let subcat of Object.keys(cats[category_select.value])) {
-                options_html += '<option value="' + subcat + '">' + subcat + '</option>';
-            }
-            subcategory_select.innerHTML = options_html;
-        });
-
-        category_select.dispatchEvent(new Event('change'));
-
-    </script>
 
 {% endblock %}

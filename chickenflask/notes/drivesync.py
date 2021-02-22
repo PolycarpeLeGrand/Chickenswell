@@ -3,15 +3,48 @@ import pickle
 import io
 import os.path
 import mammoth
-from googleapiclient.http import MediaIoBaseDownload
+from googleapiclient.http import MediaIoBaseDownload, MediaIoBaseUpload
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-from config import BASE_PATH
+from config import BASE_PATH, DRIVE_DEBUG
 
 # If modifying these scopes, delete the file token.pickle.
 CREDS_PATH = BASE_PATH / 'chickenflask/notes'
-SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
+SCOPES = ['https://www.googleapis.com/auth/drive']
+
+
+def get_drive_service():
+
+    if DRIVE_DEBUG:
+        print('Building service...')
+    creds = None
+    # The file token.pickle stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first
+    # time.
+    if os.path.exists(CREDS_PATH / 'token.pickle'):
+        with open(CREDS_PATH / 'token.pickle', 'rb') as token:
+            creds = pickle.load(token)
+            if DRIVE_DEBUG:
+                print('Loaded token from pickle...')
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if DRIVE_DEBUG:
+            print('Creds not found or invalid... Creating/refreshing')
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                CREDS_PATH / 'credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open(CREDS_PATH / 'token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
+
+    service = build('drive', 'v3', credentials=creds)
+    if DRIVE_DEBUG:
+        print('Service built...')
+    return service
 
 
 def get_binaries_from_id(file_id, last_sync=None):
@@ -24,27 +57,10 @@ def get_binaries_from_id(file_id, last_sync=None):
         bytes:
             rst or html bytes if change, else b''
     """
-    creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists(CREDS_PATH / 'token.pickle'):
-        with open(CREDS_PATH / 'token.pickle', 'rb') as token:
-            creds = pickle.load(token)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                CREDS_PATH / 'credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open(CREDS_PATH / 'token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
 
-    service = build('drive', 'v3', credentials=creds)
+    service = get_drive_service()
 
+    print('Service built...')
     # Metadata request to get mimeType and modifiedTime
     meta_request = service.files().get(fileId=file_id, fields='mimeType, modifiedTime')
     mime_type = meta_request.execute()['mimeType']
@@ -78,6 +94,37 @@ def get_binaries_from_id(file_id, last_sync=None):
         status, done = downloader.next_chunk()
 
     return update_type, fh
+
+
+def upload_content_to_drive(content, file_url):
+    file_id = get_id_from_url(file_url)
+    service = get_drive_service()
+    f = io.BytesIO(content.encode())
+    media = MediaIoBaseUpload(f, mimetype='text/markdown')
+    file = service.files().get(fileId=file_id).execute()
+    updated_file = service.files().update(fileId=file.get('id'), media_body=media).execute()
+    if DRIVE_DEBUG:
+        print(f'Updated: {updated_file}')
+
+
+def create_new_drive_file(content, name, parent_folder_id):
+
+    service = get_drive_service()
+
+    file_metadata = {
+        'name': name + '.txt',
+        'mimeType': 'text/markdown',
+        'parents': [parent_folder_id],
+    }
+
+    f = io.BytesIO(content.encode())
+    media = MediaIoBaseUpload(f, mimetype='text/markdown')
+    file = service.files().create(body=file_metadata, media_body=media).execute()
+    f_id = file.get('id')
+
+    url = service.files().get(fileId=f_id, fields='webViewLink').execute()['webViewLink']
+
+    return url
 
 
 def process_docx(b, file_url=None):

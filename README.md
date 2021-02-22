@@ -13,15 +13,18 @@ Installation
      * Also install less dependencies, `npm install less -g`
 3. Make .env file in base dir
      * File is simply named '.env' (unless specified otherwise in config.py)
-     * Should contain `SECRET_KEY='somelongandrandomchainofcharacters'`
-4. Edit config.py
-     * Set IS_PRODUCITON to True if prod
-     * Set less_path, find via `> which lessc` or `> where lessc` 
-     * Rest should be fine
+     * Should contain:
+         * `SECRET_KEY='somelongandrandomchainofcharacters'`
+         * `LESS_BIN=C:/Users/Sanchez/AppData/Roaming/npm/lessc` (only for development, not needed if css is already compiled, find via `> which lessc` or `> where lessc`)
+         * `IS_PROD=False` or `IS_PROD=False`
+         * `DRIVE_FOLDER_ID = 46gdg78g23w324r` Drive ID of the folder where files create by the app will be stored.
+4. Edit config.py 
+     * Should mostly be fine as long as .env is set up correctly
 5. Get credentials from google to allow Drive sync
-     * Place `credentials.json` in chickenflask/home
-     * Follow Google instructions to allow API access
+     * Place `credentials.json` in chickenflask/home.
+     * Follow Google instructions to allow API access.
      * If unable to add notes, try running drivesync.get_binaries_from_id() from console to force the auth process.
+     * If problems persist, try deleting token.pickle to force refresh.
 6. Init database by running dbsetup.py
      * Create a User. Most functionalities require the user to be logged in.
      * If desired, create base note categories.

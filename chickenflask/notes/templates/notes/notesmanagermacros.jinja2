@@ -1,6 +1,13 @@
-{% macro entry(title, content) %}
-    <div>
-        <p>Title: {{ title }}</p>
-        <p>Trucs: {{ content }}</p>
+{% macro catmacro(cat, type='Category') %}
+    <div class="catmacro-content">
+        <h4>{{ type }} {{ cat.id }}</h4>
+        {{ cat.name }} - {{ cat.priority }} - Save button - Del button
+    </div>
+{% endmacro %}
+
+{% macro entrymacro(entry) %}
+    <div class="entrymacro-content">
+        <h4>Entry {{ entry.id }}</h4>
+         {{ entry.name }} - {{ entry.drive_url }} - Save button - Delete Button
     </div>
 {% endmacro %}

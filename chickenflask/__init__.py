@@ -35,7 +35,7 @@ def init_app():
         from .assets import compile_static_assets
 
         app.register_blueprint(home_routes.home_bp)
-        app.register_blueprint(auth_routes.auth_bp)
+        app.register_blueprint(auth_routes.auth_bp, url_prefix='/auth')
         app.register_blueprint(notes_routes.notes_bp, url_prefix='/notes')
 
         db.create_all()

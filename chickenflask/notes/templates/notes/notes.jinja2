@@ -2,11 +2,13 @@
 
 {% block styles %}
     {{ super() }}
-    <link href="{{ url_for('static', filename='css/entry.css') }}" rel="stylesheet" type="text/css">
+    {% assets "notes_less" %}
+        <link href="{{ ASSET_URL }}" rel="stylesheet" type="text/css">
+    {% endassets %}
 {% endblock %}
 
 {% block contentheadblock %}
-    {{ category }} > {{ subcategory }} > {{ entry.name }}
+    {{ category }} > {{ subcategory }} > {{ entry.name }} <a href="{{ url_for('notes_bp.notes_edit', id=entry.id) }}" style="float: right; color:#ae1b1b">Edit</a>
 {% endblock %}
 
 
@@ -29,7 +31,7 @@
 
 {% block contentfootblock %}
     <p style="text-align: center">
-        <a class="" style="color: black" href="{{ entry.drive_url }}" target="_blank">View in Drive</a> | Last Updated: {{ entry.last_update }} | <a class="" style="color: black" href="{{ url_for('notes_bp.manage_notes_update', id=entry.id) }}">Force update</a>
+        <a class="" style="color: black" href="{{ entry.drive_url }}" target="_blank">View in Drive</a> | Last Updated: {{ entry.get_last_updated() }} | <a class="" style="color: black" href="{{ url_for('notes_bp.manage_notes_update', id=entry.id) }}">Force update</a>
     </p>
     {{ super() }}
 {% endblock %}

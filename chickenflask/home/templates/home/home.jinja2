@@ -2,7 +2,9 @@
 
 {% block styles %}
     {{ super() }}
-    <link href="{{ url_for('static', filename='css/entry.css') }}" rel="stylesheet" type="text/css">
+    {% assets "home_less" %}
+        <link href="{{ ASSET_URL }}" rel="stylesheet" type="text/css">
+    {% endassets %}
 {% endblock %}
 
 {% block contentheadblock %}
@@ -12,9 +14,7 @@
 
 {% block contentbodyblock %}
     <div>
-
         <h1>Welcome!</h1>
-
         <p>
             <a href="{{ url_for('static', filename='pdf/chicken.pdf') }}" target="_blank">Research report</a>
         </p>

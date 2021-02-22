@@ -27,8 +27,8 @@ def notes_sidebar_processor():
 @login_required
 def markdown_view():
     entry = NotesEntry.query.filter_by(name='Markdown').first_or_404()
-    subcat = NotesSubcategory.query.filter_by(name=entry.category_name).first_or_404()
-    cat = subcat.category_name
+    subcat = NotesSubcategory.query.filter_by(name=entry.parent.name).first_or_404()
+    cat = subcat.parent_name
     return redirect(url_for('notes_bp.notes', cat=cat, subcat=subcat.name, entry=entry.name))
 
 
@@ -42,12 +42,18 @@ def notes(cat, subcat, entry):
 @notes_bp.route('/manage', methods=['GET'])
 @login_required
 def manage_notes():
+    return render_template('notes/notesmanager.jinja2', categories=NotesCategory.query.all(), subcategories=NotesSubcategory.query.all(), entries=NotesEntry.query.all())
+
+
+@notes_bp.route('/add', methods=['GET'])
+@login_required
+def add_notes():
     entry_form = NotesEntryForm()
     delete_form = NotesDeleteForm()
     category_form = CategoryEntryForm()
     subcategory_form = SubcategoryEntryForm()
     cat_delete_form = CatDeleteForm()
-    return render_template('notes/notesmanager.jinja2', entry_form=entry_form, delete_form=delete_form,
+    return render_template('notes/notesadder.jinja2', entry_form=entry_form, delete_form=delete_form,
                            category_form=category_form, subcategory_form=subcategory_form, cat_delete_form=cat_delete_form)
 
 
@@ -57,13 +63,13 @@ def manage_notes_add_entry():
     form = NotesEntryForm()
     if request.method == 'POST' and form.is_submitted():
         try:
-            new_entry = NotesEntry(name=form.name.data, drive_url=form.drive_url.data, category_name=form.subcategory.data)
+            new_entry = NotesEntry(name=form.name.data, drive_url=form.drive_url.data, parent_name=form.subcategory.data)
             db.session.add(new_entry)
             db.session.commit()
             flash(f'Success! Added {new_entry.name} in {form.category.data} - {form.subcategory.data}')
         except Exception as err:
             flash(f'Error! {err}')
-    return redirect(url_for('notes_bp.manage_notes'))
+    return redirect(url_for('notes_bp.add_notes'))
 
 
 @notes_bp.route('/manage/addcategory', methods=['GET', 'POST'])
@@ -78,7 +84,7 @@ def manage_notes_add_category():
             flash(f'Success! Created new category: {new_entry.name}')
         except Exception as err:
             flash(f'Error! {err}')
-    return redirect(url_for('notes_bp.manage_notes'))
+    return redirect(url_for('notes_bp.add_notes'))
 
 
 @notes_bp.route('/manage/addsubcategory', methods=['GET', 'POST'])
@@ -87,13 +93,13 @@ def manage_notes_add_subcategory():
     form = SubcategoryEntryForm()
     if request.method == 'POST' and form.is_submitted():
         try:
-            new_entry = NotesSubcategory(name=form.name.data, category_name=form.category.data)
+            new_entry = NotesSubcategory(name=form.name.data, parent_name=form.category.data)
             db.session.add(new_entry)
             db.session.commit()
-            flash(f'Success! Created new subcategory: {new_entry.name} ({new_entry.category_name})')
+            flash(f'Success! Created new subcategory: {new_entry.name} ({new_entry.parent_name})')
         except Exception as err:
             flash(f'Error! {err}')
-    return redirect(url_for('notes_bp.manage_notes'))
+    return redirect(url_for('notes_bp.add_notes'))
 
 
 @notes_bp.route('/manage/deleteentry', methods=['GET', 'POST'])
@@ -108,7 +114,7 @@ def manage_notes_delete_entry():
             flash(f'Success! Deleted {entry.name}')
         except Exception as err:
             flash(f'Error! {err}')
-    return redirect(url_for('notes_bp.manage_notes'))
+    return redirect(url_for('notes_bp.add_notes'))
 
 
 @notes_bp.route('/manage/deletecat', methods=['GET', 'POST'])
@@ -128,18 +134,41 @@ def manage_notes_delete_cat():
             flash(f'Success! Deleted {c.name}')
         except Exception as err:
             flash(f'Error! {err}')
-    return redirect(url_for('notes_bp.manage_notes'))
+    return redirect(url_for('notes_bp.add_notes'))
 
 
 @notes_bp.route('/manage/update/<string:id>', methods=['GET'])
 @login_required
 def manage_notes_update(id):
     entry = NotesEntry.query.filter_by(id=id).first()
-    entry.update_content()
+    entry.get_content_from_drive()
     db.session.commit()
     flash(f'Entry updated')
 
     return redirect(request.referrer)
+
+
+@notes_bp.route('/edit/<string:id>')
+@login_required
+def notes_edit(id):
+    entry = NotesEntry.query.filter_by(id=id).first()
+    return render_template('notes/noteseditor.jinja2', entry=entry)
+
+
+@notes_bp.route('/editsave/<string:id>', methods=['POST'])
+@login_required
+def notes_edit_save(id):
+    try:
+        editor_content = request.form.to_dict()['text_data']
+        entry = NotesEntry.query.filter_by(id=id).first()
+        entry.save_and_sync_content(editor_content)
+        db.session.commit()
+        flash(f'Success! Saved and synced content for {entry.name}')
+    except Exception as err:
+        flash(f'Save and sync error, check for mismatch! {err}')
+        return ''
+    return url_for('notes_bp.notes', cat=entry.parent.parent_name, subcat=entry.parent_name, entry=entry.name)
+    # return redirect(url_for('notes_bp.notes', cat=entry.parent.parent_name, subcat=entry.parent_name, entry=entry.name))
 
 
 @notes_bp.route('/mdtrial', methods=['GET'])

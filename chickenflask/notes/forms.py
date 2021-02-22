@@ -21,7 +21,7 @@ class NotesEntryForm(FlaskForm):
 
     drive_url = StringField(
         'Drive Url',
-        validators=[DataRequired(), URL()]
+        validators=[URL()]
     )
 
     category = SelectField(

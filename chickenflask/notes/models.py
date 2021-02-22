@@ -1,7 +1,9 @@
 from chickenflask import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from .drivesync import sync_new_file
+from .drivesync import sync_new_file, create_new_drive_file, upload_content_to_drive
+from config import DRIVE_FOLDER_ID
+from datetime import datetime
 
 
 class NotesCategory(db.Model):
@@ -55,9 +57,10 @@ class NotesSubcategory(db.Model):
         nullable=False
     )
 
+    parent_name = db.Column(db.String(100), db.ForeignKey('notes-categories.name'),
+                            nullable=False)
     entries = db.relationship('NotesEntry', backref=db.backref('parent'), lazy=True)
-    category_name = db.Column(db.String(100), db.ForeignKey('notes-categories.name'),
-        nullable=False)
+
 
     def __repr__(self):
         return f'Subcategory: {self.name} | Priority: {self.priority} | Associated notes: {", ".join(entry.name for entry in self.entries)}'
@@ -102,16 +105,33 @@ class NotesEntry(db.Model):
         default='#'
     )
 
-    category_name = db.Column(db.String(100), db.ForeignKey('notes-subcategories.name'),
-                              nullable=False)
+    parent_name = db.Column(db.String(100), db.ForeignKey('notes-subcategories.name'),
+                            nullable=False)
 
     def __init__(self, **kwargs):
         super(NotesEntry, self).__init__(**kwargs)
-        self.update_content()
+        if self.drive_url == '':
+            self.add_to_drive_as_new_file()
+        else:
+            self.get_content_from_drive()
 
-    def update_content(self):
+    def get_content_from_drive(self):
         self.content, self.content_type = sync_new_file(self.drive_url)
         # self.last_update = datetime.now (if success)
+        self.last_update = datetime.now()
+
+    def save_and_sync_content(self, new_content):
+        self.content = new_content
+        upload_content_to_drive(self.content, self.drive_url)
+        self.last_update = datetime.now()
+
+    def add_to_drive_as_new_file(self):
+        self.content = f'{self.name}\n{len(self.name)*"="}'
+        self.drive_url = create_new_drive_file(self.content, self.name, DRIVE_FOLDER_ID)
+        self.last_update = datetime.now()
+
+    def get_last_updated(self):
+        return self.last_update.strftime("%Y-%m-%d %H:%M") if self.last_update else None
 
     def __repr__(self):
         return f'Entry: {self.name}'
