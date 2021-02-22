@@ -59,8 +59,11 @@ Supported file types:
 TODO
 ----
 
-* less css
-* Split notes in new app
-* Better db models and management
 * Auto-update drive file based on last_updated
-* Text editor!
+* Nicer text editor
+* Option to turn off drive sync
+
+Known Issues
+------------
+
+* If too many sidenav items are expanded, overflow is hidden and not clickable
