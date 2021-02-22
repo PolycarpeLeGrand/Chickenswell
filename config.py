@@ -29,8 +29,6 @@ class Config:
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    LESS_BIN = environ.get('LESS_BIN')
-
 
 class ProdConfig(Config):
     """Prod config"""
@@ -42,6 +40,7 @@ class ProdConfig(Config):
 class DevConfig(Config):
     """Dev config"""
     FLASK_ENV = 'development'
+    LESS_BIN = environ.get('LESS_BIN')
     DEBUG = True
     TESTING = True
     EXPLAIN_TEMPLATE_LOADING = False
