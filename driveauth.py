@@ -1,4 +1,4 @@
-from chickenflask.home.drivesync import get_binaries_from_id
+from chickenflask.notes.drivesync import get_binaries_from_id
 
 if __name__ == '__main__':
     print('This tool should fix problems with Drive api authentication')
